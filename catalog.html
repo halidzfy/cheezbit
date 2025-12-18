@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog - K-Jastip Universe</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="jastipApp()">
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2" style="top: 20%; right: 50%;"></div>
+
+    <nav class="navbar glass">
+        <div class="container nav-content">
+            <div class="logo">K-Jastip<span>✨</span></div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="catalog.html" class="active">Katalog</a>
+                <a href="contact.html">Let's Talk</a>
+            </div>
+            <div class="menu">
+                <template x-if="!isLoggedIn">
+                    <button @click="showLoginModal = true" class="btn btn-primary">Login</button>
+                </template>
+                <template x-if="isLoggedIn">
+                    <div class="user-profile">
+                        <div class="avatar-circle" x-text="username.charAt(0)"></div>
+                        <span class="username-text" x-text="username"></span>
+                        <button @click="logout()" class="btn btn-sm">Keluar</button>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </nav>
+
+    <section class="container catalog-section" style="padding-top: 50px;">
+        <h2 class="section-title">🛍️ Pilih Barang Jastip Kamu</h2>
+        <div class="grid-container">
+            <template x-for="item in products" :key="item.id">
+                <div class="card glass">
+                    <div class="card-image-wrapper">
+                        <div class="card-image" :style="`background-image: url('${item.img}')`"></div>
+                        <span class="badge-holo">Open PO</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 x-text="item.name"></h3>
+                        <p class="price" x-text="formatRupiah(item.price)"></p>
+                        <p class="desc" x-text="item.desc"></p>
+                        <button @click="checkOrder(item)" class="btn btn-block btn-gradient">Amankan Slot 🛒</button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <div class="modal-backdrop" x-show="showLoginModal" style="display: none;">
+        <div class="modal-box glass">
+            <h3>Login Dulu Yuk! ✨</h3>
+            <p>Supaya pesananmu tercatat sistem.</p>
+            <input type="text" x-model="inputName" placeholder="Nama kamu..." class="form-input">
+            <button @click="login()" class="btn btn-primary btn-block">Masuk</button>
+            <button @click="showLoginModal = false" class="btn-close">x</button>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" x-show="showOrderModal" style="display: none;">
+        <div class="modal-box glass">
+            <div class="modal-header">
+                <h3>Detail Pesanan 🛍️</h3>
+                <button @click="showOrderModal = false" class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body" x-show="selectedItem">
+                <p>Item: <strong x-text="selectedItem ? selectedItem.name : ''"></strong></p>
+                <hr class="divider">
+                <label class="label-text">Metode Pembayaran:</label>
+                <div class="radio-group">
+                    <label class="radio-card" :class="{'active': paymentType === 'full'}">
+                        <input type="radio" value="full" x-model="paymentType"> Full
+                    </label>
+                    <label class="radio-card" :class="{'active': paymentType === 'dp'}">
+                        <input type="radio" value="dp" x-model="paymentType"> DP 50%
+                    </label>
+                </div>
+                <div class="total-box">
+                    <p>Total Bayar:</p>
+                    <h2 x-text="calculateTotal()"></h2>
+                </div>
+                <button @click="processToQRIS()" class="btn btn-gradient btn-block">Bayar via QRIS</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" x-show="showQRISModal" style="display: none;">
+        <div class="modal-box glass text-center">
+            <h3>Scan QRIS</h3>
+            <div class="qris-frame">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=JASTIP-PAYMENT" alt="QR">
+            </div>
+            <p>Total: <strong x-text="calculateTotal()"></strong></p>
+            <button @click="finishTransaction()" class="btn btn-primary btn-block">Sudah Bayar</button>
+            <button @click="showQRISModal = false" class="btn-text">Batal</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
