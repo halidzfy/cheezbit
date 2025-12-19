@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Cheezbit Merch</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="jastipApp()">
+
+    <div class="blob blob-2" style="top: -50px; right: -50px;"></div>
+
+    <nav class="navbar glass">
+        <div class="container nav-content">
+            <div class="logo">Cheezbit<span>✨</span></div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="catalog.html">Catalogue</a>
+                <a href="orders.html">My Order</a>
+                <a href="contact.html" class="active">Contact</a> </div>
+            <div class="menu">
+                <template x-if="!isLoggedIn">
+                    <button @click="showLoginModal = true" class="btn btn-primary">Login</button>
+                </template>
+                <template x-if="isLoggedIn">
+                    <div class="user-profile">
+                        <div class="avatar-circle" x-text="username.charAt(0)"></div>
+                        <span class="username-text">Halo kak, <b x-text="username"></b></span>
+                        <button @click="logout()" class="btn btn-sm">Keluar</button>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </nav>
+
+    <section class="container">
+        <div class="contact-wrapper">
+            <div class="contact-info">
+                <h1>Butuh Bantuan? <br>Let's Talk! 💌</h1>
+                <p class="desc">Mincheez siap membantu menjawab semua pertanyaanmu atau request barang khusus.</p>
+                <br>
+                <div class="contact-item">
+                    <div class="icon-box">📞</div>
+                    <span>+62 896-5572-0250</span>
+                </div>
+                <div class="contact-item">
+                    <div class="icon-box">📱</div>
+                    <span>@cheezbit.merch</span>
+                </div>
+                <div class="contact-item">
+                    <div class="icon-box">📧</div>
+                    <span>help@cheezbitmerch.id</span>
+                </div>
+            </div>
+
+            <div class="contact-form-box glass">
+                <h1>Kirim Pesan</h1>
+                <input type="text" placeholder="Nama Kamu" class="form-input">
+                <input type="email" placeholder="Email Aktif" class="form-input">
+                <textarea placeholder="Tulis pesan atau request barang disini..." class="form-input"></textarea>
+                <button class="btn btn-primary btn-block">Kirim Pesan 🚀</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-backdrop" x-show="showLoginModal" style="display: none;">
+        <div class="modal-box glass">
+            <h3>Login Member ✨</h3>
+            <input type="text" x-model="inputName" placeholder="Nama kamu..." class="form-input">
+            <button @click="login()" class="btn btn-primary btn-block">Masuk</button>
+            <button @click="showLoginModal = false" class="btn-close">x</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

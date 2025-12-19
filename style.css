@@ -1,0 +1,364 @@
+/* --- 1. SETUP VARIABEL & FONT --- */
+:root {
+    --lilac: #c4b5fd;
+    --lilac-dark: #8b5cf6;
+    --pink-soft: #fbcfe8;
+    --pink-hot: #fc78ba;
+    --bg-gradient: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    --text-main: #4c1d95;
+    --text-sec: #8678ba;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Quicksand', sans-serif; /* Font Aesthetic */
+    background: var(--bg-gradient);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Dekorasi Blob Background */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    opacity: 0.6;
+}
+.blob-1 { width: 400px; height: 400px; background: var(--lilac); top: -100px; left: -100px; }
+.blob-2 { width: 300px; height: 300px; background: var(--pink-soft); bottom: 50px; right: -50px; }
+
+/* --- 2. KOMPONEN UTAMA --- */
+.container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+/* Glassmorphism Effect Class */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 rgba(139, 92, 246, 0.1);
+}
+
+/* Buttons */
+.btn {
+    border: none; padding: 12px 24px; border-radius: 50px; 
+    cursor: pointer; font-weight: 700; font-family: 'Fredoka', sans-serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-primary {
+    background: var(--lilac-dark); color: white;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4); }
+
+.btn-gradient {
+    background: linear-gradient(90deg, var(--lilac-dark), var(--pink-hot));
+    color: white;
+}
+.btn-gradient:hover { filter: brightness(1.1); transform: scale(1.02); }
+
+.btn-sm { padding: 6px 15px; font-size: 0.9rem; background: white; color: var(--lilac-dark); border: 1px solid var(--lilac); }
+.btn-block { width: 100%; margin-top: 15px; }
+.btn-text { background: transparent; color: var(--text-sec); text-decoration: underline; }
+
+/* --- 3. NAVBAR --- */
+.navbar { position: sticky; top: 0; z-index: 100; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.5); }
+.nav-content { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-family: 'Fredoka', sans-serif; font-size: 1.6rem; color: var(--lilac-dark); }
+.user-profile { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.5); padding: 5px 10px; border-radius: 30px; }
+.avatar-circle { width: 30px; height: 30px; background: var(--pink-hot); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+/* --- 4. HERO SECTION --- */
+.hero { padding: 80px 0 60px; position: relative; }
+.hero h1 { font-family: 'Fredoka', sans-serif; font-size: 3rem; margin: 15px 0; background: -webkit-linear-gradient(45deg, var(--lilac-dark), var(--pink-hot)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero p { color: var(--text-sec); font-size: 1.1rem; }
+.tag-pill { background: white; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: var(--pink-hot); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+
+/* --- 5. CATALOG GRID --- */
+.section-title { text-align: center; margin-bottom: 30px; color: var(--text-main); font-family: 'Fredoka', sans-serif; }
+.grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 30px; padding-bottom: 50px; }
+
+/* AESTHETIC CARD */
+.card { border-radius: 20px; overflow: hidden; transition: transform 0.3s ease; display: flex; flex-direction: column; }
+.card:hover { transform: translateY(-10px); }
+
+.card-image-wrapper { position: relative; overflow: hidden; height: 220px; }
+.card-image { width: 100%; height: 100%; background-size: cover; background-position: center; transition: transform 0.5s ease; }
+.card:hover .card-image { transform: scale(1.1); }
+
+/* Holographic Badge */
+.badge-holo {
+    position: absolute; top: 15px; right: 15px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.4));
+    padding: 5px 12px; border-radius: 12px;
+    font-size: 0.75rem; font-weight: bold; color: var(--lilac-dark);
+    backdrop-filter: blur(5px); border: 1px solid white;
+}
+
+.card-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+.card-body h3 { font-size: 1.1rem; margin-bottom: 5px; }
+.price { color: var(--pink-hot); font-weight: 800; font-size: 1.2rem; }
+.desc { font-size: 0.9rem; color: var(--text-sec); margin-top: 10px; flex-grow: 1; }
+
+/* --- 6. MODAL & FORM --- */
+.modal-backdrop {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(76, 29, 149, 0.2); backdrop-filter: blur(5px);
+    display: flex; align-items: center; justify-content: center; z-index: 999;
+}
+.modal-box {
+    width: 90%; max-width: 420px; padding: 25px; border-radius: 25px;
+    background: white; /* Fallback */
+    background: rgba(255, 255, 255, 0.9);
+    animation: popup 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.btn-close { font-size: 2rem; background: none; border: none; cursor: pointer; color: var(--text-sec); line-height: 1; }
+.form-input {
+    width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #eef2ff;
+    background: #fdf4ff; font-family: 'Quicksand', sans-serif; font-size: 1rem;
+    transition: 0.3s;
+}
+.form-input:focus { outline: none; border-color: var(--lilac); background: white; }
+
+/* Order Detail Specific */
+.product-preview { display: flex; gap: 15px; align-items: center; margin-bottom: 20px; }
+.thumb-img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; }
+.divider { border: 0; border-top: 2px dashed #eef2ff; margin: 15px 0; }
+
+.radio-group { display: flex; gap: 10px; margin: 10px 0; }
+.radio-card {
+    flex: 1; padding: 10px; border: 2px solid #eef2ff; border-radius: 12px;
+    cursor: pointer; text-align: center; font-weight: bold; font-size: 0.9rem; color: var(--text-sec);
+    transition: 0.2s;
+}
+.radio-card input { display: none; }
+.radio-card.active { border-color: var(--pink-hot); background: #fdf2f8; color: var(--pink-hot); }
+
+.total-box { background: linear-gradient(135deg, #fdf4ff, #e0e7ff); padding: 20px; border-radius: 15px; text-align: center; margin-top: 20px; }
+.total-box h2 { color: var(--lilac-dark); font-family: 'Fredoka', sans-serif; font-size: 2rem; margin: 5px 0; }
+.note { font-size: 0.8rem; color: var(--pink-hot); }
+
+.qris-frame { padding: 10px; background: white; border-radius: 15px; display: inline-block; margin: 20px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+@keyframes popup {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 600px) {
+    .hero h1 { font-size: 2.2rem; }
+    .nav-content { padding: 0 15px; }
+}
+/* --- UPDATE: NAV LINK ACTIVE --- */
+.nav-links a {
+    text-decoration: none; color: var(--text-sec); font-weight: 600; margin: 0 10px;
+    transition: 0.3s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--lilac-dark); }
+
+/* --- PAGE: HOME TESTIMONIALS --- */
+.testimonial-section { padding: 60px 0; background: rgba(255,255,255,0.4); }
+.testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 30px; }
+.testi-card { padding: 25px; border-radius: 20px; position: relative; }
+.quote-icon { font-size: 2rem; color: var(--pink-soft); position: absolute; top: 15px; right: 20px; opacity: 0.5; }
+.user-avatar { width: 50px; height: 50px; border-radius: 50%; background: #ddd; margin-bottom: 15px; background-size: cover; }
+.star-rating { color: gold; margin-bottom: 10px; }
+
+/* --- PAGE: CONTACT FORM --- */
+.contact-wrapper { display: flex; flex-wrap: wrap; gap: 40px; align-items: start; padding: 40px 0; }
+.contact-info { flex: 1; min-width: 300px; }
+.contact-form-box { flex: 1.5; min-width: 300px; padding: 40px; border-radius: 25px; }
+.contact-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-weight: 600; color: var(--text-main); }
+.icon-box { width: 45px; height: 45px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--lilac-dark); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+textarea.form-input { min-height: 120px; resize: vertical; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .nav-content { flex-direction: column; gap: 15px; height: auto; padding: 15px; }
+    .menu { width: 100%; justify-content: center; display: flex; flex-wrap: wrap; gap: 10px; }
+}
+/* Membuat modal lebih tinggi & mirip tampilan HP */
+.detail-modal {
+    height: 85vh; /* Tinggi hampir full layar */
+    display: flex;
+    flex-direction: column;
+    padding: 0; /* Reset padding bawaan modal-box */
+    overflow: hidden;
+    max-width: 450px; /* Lebar maksimal mirip HP */
+}
+
+.modal-header {
+    padding: 15px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.9);
+}
+
+.btn-back { background: none; border: none; font-weight: 600; cursor: pointer; color: var(--text-sec); }
+
+/* Area Scroll untuk Konten */
+.detail-content {
+    flex: 1;
+    overflow-y: auto; /* Bisa discroll */
+    padding: 0;
+    scrollbar-width: thin;
+}
+
+/* Gambar Full Width */
+.detail-img-container { width: 100%; background: #f8f8f8; }
+.main-detail-img { width: 100%; height: auto; display: block; }
+
+/* Info Produk */
+.detail-info { padding: 20px 20px 5px 20px; }
+.detail-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.4; }
+.detail-price { font-size: 1.4rem; color: var(--pink-hot); font-weight: 800; }
+
+/* List Info (Periode & Shipping) sesuai Screenshot */
+.info-section { padding: 15px 20px; }
+.info-list { list-style: disc inside; color: var(--secondary); font-size: 0.95rem; }
+.info-list li { margin-bottom: 12px; line-height: 1.5; }
+.info-list strong { color: var(--text-main); display: block; margin-bottom: 2px; }
+
+/* Banner Event */
+.event-banner {
+    margin: 10px 20px 30px;
+    background: #fffbf0; /* Warna krem lembut */
+    padding: 20px;
+    text-align: center;
+    border: 1px dashed var(--lilac);
+    border-radius: 10px;
+}
+.event-title { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; color: var(--text-main); margin-bottom: 5px; }
+.event-desc { font-size: 0.85rem; color: var(--text-sec); }
+
+/* Tombol Melayang di Bawah (Sticky Action Bar) */
+.action-bar {
+    padding: 15px 20px;
+    background: white;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    gap: 15px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+}
+/* ... CSS sebelumnya jangan dihapus ... */
+
+/* --- STYLE PAGE ORDER LIST --- */
+.order-list { display: flex; flex-direction: column; gap: 20px; max-width: 800px; margin: 0 auto 50px; }
+
+.order-card {
+    display: flex; flex-direction: row; /* Tampilan menyamping */
+    padding: 20px; align-items: center; gap: 20px;
+}
+
+.order-thumb { width: 100px; height: 100px; border-radius: 10px; object-fit: cover; border: 1px solid #eee; }
+.order-info { flex: 1; }
+.order-header { display: flex; gap: 10px; font-size: 0.8rem; color: var(--text-grey); margin-bottom: 5px; }
+.order-type { font-size: 0.9rem; color: var(--lilac-dark); margin-bottom: 5px; font-weight: 600; }
+.order-info h3 { font-size: 1.1rem; margin-bottom: 5px; }
+
+.order-status-box { text-align: right; min-width: 120px; }
+.status-badge {
+    background: #dbeafe; color: #1e40af; /* Biru status */
+    padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;
+    display: inline-block; margin-bottom: 10px;
+}
+
+/* Responsif untuk HP */
+@media (max-width: 600px) {
+    .order-card { flex-direction: column; align-items: flex-start; }
+    .order-thumb { width: 100%; height: 150px; }
+    .order-status-box { text-align: left; width: 100%; border-top: 1px dashed #eee; padding-top: 10px; margin-top: 10px; }
+}
+/* --- CSS BARU: CHECKOUT FORM & SUCCESS MODAL --- */
+
+/* Style Input Group (Mirip gambar referensi) */
+.input-group { margin-bottom: 15px; }
+.input-label { display: block; font-weight: 700; color: var(--text-main); margin-bottom: 8px; font-size: 0.9rem; }
+
+/* Tampilan Form yang lebih rapi */
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #f8fafc;
+    font-family: 'Quicksand', sans-serif;
+    transition: 0.3s;
+}
+.form-control:focus { border-color: var(--pink-hot); background: white; outline: none; }
+
+/* Checkout Summary Box */
+.checkout-summary {
+    background: white; border: 1px solid #eee; border-radius: 12px;
+    padding: 15px; display: flex; gap: 15px; align-items: center; margin-bottom: 20px;
+}
+.checkout-thumb { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
+
+/* SUCCESS POPUP STYLE */
+.success-icon {
+    width: 80px; height: 80px; background: #dcfce7; color: #16a34a;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; margin: 0 auto 20px;
+    animation: bounce 0.5s;
+}
+.success-title { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 10px; }
+.success-desc { color: var(--text-sec); font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; }
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
+/* --- STYLE: REAL PROOF GALLERY --- */
+.proof-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Responsif otomatis */
+    gap: 15px;
+}
+
+.proof-item {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 250px; /* Tinggi seragam */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.proof-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Agar gambar tidak gepeng */
+    transition: transform 0.4s ease;
+}
+
+/* Efek Hover (Zoom) */
+.proof-item:hover .proof-img {
+    transform: scale(1.1);
+}
+
+/* Tulisan di atas gambar */
+.proof-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    color: white;
+    padding: 20px 15px 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: left;
+    opacity: 0.9;
+}

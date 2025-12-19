@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue - Cheezbit Merch</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="jastipApp()">
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2" style="top: 20%; right: 50%;"></div>
+
+    <nav class="navbar glass">
+        <div class="container nav-content">
+            <div class="logo">Cheezbit<span>✨</span></div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="catalog.html" class="active">Catalogue</a>
+                <a href="orders.html">My Order</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="menu">
+                <template x-if="!isLoggedIn">
+                    <button @click="showLoginModal = true" class="btn btn-primary">Login</button>
+                </template>
+                <template x-if="isLoggedIn">
+                    <div class="user-profile">
+                        <div class="avatar-circle" x-text="username.charAt(0)"></div>
+                        <span class="username-text">Halo kak, <b x-text="username"></b></span>
+                        <button @click="logout()" class="btn btn-sm">Keluar</button>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </nav>
+
+    <section class="container catalog-section" style="padding-top: 50px;">
+        <h2 class="section-title">🛍️ Order Merchandise Favoritmu Disini!</h2>
+        <div class="grid-container">
+            <template x-for="item in products" :key="item.id">
+                <div class="card glass">
+                    <div class="card-image-wrapper" @click="viewDetail(item)" style="cursor: pointer;">
+                        <div class="card-image" :style="`background-image: url('${item.img}')`"></div>
+                        <span class="badge-holo">Pre-Order</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 x-text="item.name"></h3>
+                        <p class="price" x-text="formatRupiah(item.price)"></p>
+                        <button @click="viewDetail(item)" class="btn btn-block btn-gradient">Details 🔍</button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <div class="modal-backdrop" x-show="showLoginModal" style="display: none;">
+        <div class="modal-box glass">
+            <h3>Login Member ✨</h3>
+            <p style="margin-bottom:15px; color:#666;">Masuk untuk order.</p>
+            
+            <div class="input-group">
+                <label class="input-label">Nama Panggilan</label>
+                <input type="text" x-model="loginForm.name" placeholder="Contoh: Aya" class="form-control">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Email</label>
+                <input type="email" x-model="loginForm.email" placeholder="nama@email.com" class="form-control">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Password</label>
+                <input type="password" x-model="loginForm.password" placeholder="******" class="form-control">
+            </div>
+
+            <button @click="login()" class="btn btn-primary btn-block">Login Now</button>
+            <button @click="showLoginModal = false" class="btn-close">x</button>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" x-show="showDetailModal" x-transition.opacity style="display: none;">
+        <div class="modal-box glass detail-modal">
+            <div class="modal-header">
+                <button @click="showDetailModal = false" class="btn-back">← Back</button>
+                <h4 style="margin:0;">Product Detail</h4>
+                <button @click="showDetailModal = false" class="btn-close">&times;</button>
+            </div>
+            <div class="detail-content" x-show="selectedItem">
+                <div class="detail-img-container">
+                    <img :src="selectedItem ? selectedItem.detailImg : ''" class="main-detail-img">
+                </div>
+                <div class="detail-info">
+                    <h2 class="detail-title" x-text="selectedItem ? selectedItem.name : ''"></h2>
+                    <p class="detail-price" x-text="selectedItem ? formatRupiah(selectedItem.price) : ''"></p>
+                </div>
+                <hr class="divider">
+                <div class="info-section">
+                    <ul class="info-list">
+                        <li><strong>Pre-order Period:</strong><br><span x-text="selectedItem ? selectedItem.period : ''"></span></li>
+                        <li><strong>Estimated Shipping:</strong><br><span x-text="selectedItem ? selectedItem.shipping : ''"></span></li>
+                    </ul>
+                </div>
+                <div class="event-banner" x-show="selectedItem && selectedItem.eventTitle">
+                    <p class="event-title" x-text="selectedItem ? selectedItem.eventTitle : ''"></p>
+                    <p class="event-desc" x-text="selectedItem ? selectedItem.eventDesc : ''"></p>
+                </div>
+            </div>
+            <div class="action-bar">
+                <a href="contact.html" class="btn btn-outline-sm text-center" style="flex:1; display:flex; align-items:center; justify-content:center; text-decoration:none;">💬 Chat</a>
+                <button @click="proceedToOption()" class="btn btn-primary" style="flex:2; background: var(--pink-hot);">Order Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" x-show="showOrderModal" style="display: none;">
+        <div class="modal-box glass">
+            <div class="modal-header">
+                <h3>Opsi Pembayaran 💳</h3>
+                <button @click="showOrderModal = false" class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body" x-show="selectedItem">
+                <p>Item: <strong x-text="selectedItem ? selectedItem.name : ''"></strong></p>
+                <hr class="divider">
+                <label class="label-text">Pilih Tipe:</label>
+                <div class="radio-group">
+                    <label class="radio-card" :class="{'active': paymentType === 'full'}">
+                        <input type="radio" value="full" x-model="paymentType"> Full
+                    </label>
+                    <label class="radio-card" :class="{'active': paymentType === 'dp'}">
+                        <input type="radio" value="dp" x-model="paymentType"> DP 50%
+                    </label>
+                </div>
+                <div class="total-box">
+                    <p>Total Bayar:</p>
+                    <h2 x-text="calculateTotal()"></h2>
+                </div>
+                <button @click="proceedToCheckout()" class="btn btn-gradient btn-block">Lanjut ke Pengiriman →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" x-show="showCheckoutModal" style="display: none;">
+        <div class="modal-box glass detail-modal"> <div class="modal-header">
+                <button @click="showCheckoutModal = false; showOrderModal = true;" class="btn-back">← Back</button>
+                <h4 style="margin:0;">Checkout</h4>
+                <button @click="showCheckoutModal = false" class="btn-close">&times;</button>
+            </div>
+            
+            <div class="detail-content" style="padding: 20px;">
+                <div class="checkout-summary" x-show="selectedItem">
+                    <img :src="selectedItem ? selectedItem.img : ''" class="checkout-thumb">
+                    <div>
+                        <div style="font-weight:bold; font-size:0.9rem;" x-text="selectedItem ? selectedItem.name : ''"></div>
+                        <div style="color:var(--pink-hot); font-weight:700;" x-text="calculateTotal()"></div>
+                        <div style="font-size:0.8rem; color:#888;">Qty: 1 • <span x-text="paymentType === 'dp' ? 'DP 50%' : 'Full Payment'"></span></div>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom:15px;">Your Details</h4>
+                <div class="input-group">
+                    <label class="input-label">+ Add personal information</label>
+                    <input type="text" x-model="checkoutForm.fullname" placeholder="Nama Penerima" class="form-control" style="margin-bottom:10px;">
+                    <input type="tel" x-model="checkoutForm.phone" placeholder="Nomor HP / WhatsApp" class="form-control">
+                </div>
+
+                <h4 style="margin: 20px 0 15px;">Address</h4>
+                <div class="input-group">
+                    <label class="input-label">+ Add shipping address</label>
+                    <textarea x-model="checkoutForm.address" placeholder="Alamat Lengkap (Jalan, No. Rumah, Kecamatan, Kota)" class="form-control" rows="3"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">Catatan (Opsional)</label>
+                    <input type="text" x-model="checkoutForm.note" placeholder="Contoh: Titip di pos satpam" class="form-control">
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <div style="flex:1;">
+                    <div style="font-size:0.8rem;">Total:</div>
+                    <div style="font-weight:bold; color:var(--pink-hot); font-size:1.1rem;" x-text="calculateTotal()"></div>
+                </div>
+                <button @click="proceedToQRIS()" class="btn btn-primary" style="flex:1.5;">Place Your Order</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" x-show="showQRISModal" style="display: none;">
+        <div class="modal-box glass text-center">
+            <h3>Scan QRIS</h3>
+            <div class="qris-frame">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=JASTIP-PAYMENT" alt="QR">
+            </div>
+            <p>Scan untuk membayar <strong x-text="calculateTotal()"></strong></p>
+            <button @click="finishTransaction()" class="btn btn-primary btn-block">Sudah Bayar</button>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" x-show="showSuccessModal" x-transition style="display: none;">
+        <div class="modal-box glass text-center" style="padding: 40px 30px;">
+            <div class="success-icon">✓</div>
+            <h2 class="success-title">Payment Success!</h2>
+            <p class="success-desc">
+                Yeay! Pesanan kamu berhasil dikonfirmasi.<br>
+                Invoice dan detail pesanan telah dikirim ke email kamu: 
+                <strong x-text="loginForm.email"></strong>
+            </p>
+            <button @click="closeSuccessAndRedirect()" class="btn btn-primary btn-block">Lihat Pesanan Saya</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

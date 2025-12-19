@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Order - Cheezbit Merch</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="jastipApp()">
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2" style="top: 80%; right: 10%;"></div>
+
+    <nav class="navbar glass">
+        <div class="container nav-content">
+            <div class="logo">Cheezbit<span>✨</span></div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="catalog.html">Catalogue</a>
+                <a href="orders.html" class="active">My Order</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="menu">
+                <template x-if="!isLoggedIn">
+                    <button @click="showLoginModal = true" class="btn btn-primary">Login</button>
+                </template>
+                
+                <template x-if="isLoggedIn">
+                    <div class="user-profile">
+                        <div class="avatar-circle" x-text="username.charAt(0)"></div>
+                        <span class="username-text">Halo kak, <b x-text="username"></b></span>
+                        <button @click="logout()" class="btn btn-sm">Keluar</button>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </nav>
+
+    <section class="container" style="padding-top: 50px;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin: 0;">📦 Status Pesanan</h2>
+            <template x-if="myOrders.length > 0">
+                <button @click="resetOrders()" class="btn btn-sm" style="background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; font-size: 0.8rem;">
+                    Hapus Riwayat 🗑️
+                </button>
+            </template>
+        </div>
+
+        <template x-if="myOrders.length === 0">
+            <div class="glass text-center" style="padding: 50px; border-radius: 20px; margin-top: 20px;">
+                <h3>Belum ada pesanan nih... ☹️</h3>
+                <p>Riwayat transaksi kamu akan muncul di sini.</p>
+                <a href="catalog.html"><button class="btn btn-primary" style="margin-top: 20px;">Ke Katalog</button></a>
+            </div>
+        </template>
+
+        <div class="order-list" x-show="myOrders.length > 0">
+            <template x-for="order in myOrders.slice().reverse()" :key="order.id">
+                <div class="card glass order-card">
+                    <img :src="order.img" class="order-thumb" alt="Product Image">
+                    <div class="order-info">
+                        <div class="order-header">
+                            <span class="order-id" x-text="order.id"></span> • 
+                            <span class="order-date" x-text="order.date"></span>
+                        </div>
+                        <h3 x-text="order.itemName"></h3>
+                        <p class="order-type" style="color: var(--pink-hot); font-weight:bold;" x-text="order.type"></p>
+                        <h4 class="price" x-text="order.price"></h4>
+                        <p style="font-size: 0.8rem; color: #666; margin-top: 5px;" x-show="order.address">📍 <span x-text="order.address"></span></p>
+                    </div>
+                    <div class="order-status-box">
+                        <span class="status-badge" x-text="order.status"></span>
+                        <br>
+                        <a href="contact.html" class="btn-text" style="font-size: 0.8rem; margin-top:10px; display:inline-block;">Butuh Bantuan?</a>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <div class="modal-backdrop" x-show="showLoginModal" style="display: none;">
+        <div class="modal-box glass">
+            <h3>Login Member ✨</h3>
+            <p style="margin-bottom:15px; color:#666;">Masuk untuk melihat pesanan.</p>
+            
+            <div class="input-group">
+                <label class="input-label">Nama Panggilan</label>
+                <input type="text" x-model="loginForm.name" placeholder="Contoh: Budi" class="form-control">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Email</label>
+                <input type="email" x-model="loginForm.email" placeholder="nama@email.com" class="form-control">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Password</label>
+                <input type="password" x-model="loginForm.password" placeholder="******" class="form-control">
+            </div>
+
+            <button @click="login()" class="btn btn-primary btn-block">Masuk Sekarang</button>
+            <button @click="showLoginModal = false" class="btn-close">x</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

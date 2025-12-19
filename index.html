@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Cheezbit Merch</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="jastipApp()">
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <nav class="navbar glass">
+        <div class="container nav-content">
+            <div class="logo">Cheezbit<span>✨</span></div>
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="catalog.html">Catalogue</a>
+                <a href="orders.html">My Order</a> 
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="menu">
+                <template x-if="!isLoggedIn">
+                    <button @click="showLoginModal = true" class="btn btn-primary">Login</button>
+                </template>
+                <template x-if="isLoggedIn">
+                    <div class="user-profile">
+                        <div class="avatar-circle" x-text="username.charAt(0)"></div>
+                        <span class="username-text">Halo kak, <b x-text="username"></b></span>
+                        <button @click="logout()" class="btn btn-sm">Keluar</button>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container text-center">
+            <span class="tag-pill">✈️ Beli barang dari Korea, China, dan Jepang</span>
+            <h1>Jastip Aman, Mudah, dan Terpercaya<br>No Drama!</h1>
+            <p>Kami membantu kamu mendapatkan merchandise impian dengan sistem pembayaran yang fleksibel (DP/Full)</p>
+            <br>
+            <a href="catalog.html"><button class="btn btn-gradient">Jelajahi Katalog</button></a>
+        </div>
+    </header>
+
+    <section class="container" style="margin-top: 40px; margin-bottom: 40px;">
+        <div class="glass text-center" style="padding: 30px; border-radius: 25px;">
+            <span class="tag-pill" style="background: #dcfce7; color: #166534;">📦 Live Updates</span>
+            <h2 class="section-title" style="margin-top: 15px;">500+ Orderan Mendarat dengan Aman! ✈️</h2>
+            <p style="color: var(--text-sec); margin-bottom: 30px; max-width: 600px; margin-left: 300px; margin-right: auto;"> 
+                100% Original, Safe Packing, & Trusted.
+            </p>
+            
+            <div class="proof-grid">
+                <div class="proof-item">
+                    <img src="proof1.jpg" alt="Arrival 1" class="proof-img">
+                    <div class="proof-overlay">Batch #4 Arrived</div>
+                </div>
+                <div class="proof-item">
+                    <img src="proof2.jpg" alt="Arrival 2" class="proof-img">
+                    <div class="proof-overlay">Pre-Order Album TWS</div>
+                </div>
+                <div class="proof-item">
+                    <img src="proof3.jpg" alt="Arrival 3" class="proof-img">
+                    <div class="proof-overlay">Batch #5 Arrived</div>
+                </div>
+                <div class="proof-item">
+                    <img src="proof4.jpg" alt="Arrival 4" class="proof-img">
+                    <div class="proof-overlay">Pre-Order Album Chuei Liyu</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonial-section">
+        <div class="container">
+            <h2 class="section-title">Apa Kata Mereka? 💬</h2>
+            <div class="testi-grid">
+                <div class="card glass testi-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="user-avatar" style="background-image: url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100')"></div>
+                    <div class="star-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="desc">"Akhirnya dapet Lightstick ver 3! Adminnya ramah banget, packingnya super aman pake bubble wrap tebel. Makasih kak!"</p>
+                    <p><strong>- Sarah, Jakarta</strong></p>
+                </div>
+                <div class="card glass testi-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="user-avatar" style="background-image: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100')"></div>
+                    <div class="star-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="desc">"Suka banget sistem DP-nya, jadi ga berat di kantong buat pelajar kayak aku. Barang sampe tepat waktu."</p>
+                    <p><strong>- Alisa, Bandung</strong></p>
+                </div>
+                <div class="card glass testi-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="user-avatar" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100')"></div>
+                    <div class="star-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="desc">"Barang 100% official. Udah cek scan barcode weverse tembus. Recommended seller!"</p>
+                    <p><strong>- Aldi, Surabaya</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-backdrop" x-show="showLoginModal" style="display: none;">
+        <div class="modal-box glass">
+            <h3>Login Member ✨</h3>
+            <input type="text" x-model="inputName" placeholder="Nama kamu..." class="form-input">
+            <button @click="login()" class="btn btn-primary btn-block">Masuk</button>
+            <button @click="showLoginModal = false" class="btn-close">x</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
